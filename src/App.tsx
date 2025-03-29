@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,13 +7,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SignedIn, SignedOut, RedirectToSignIn, useAuth } from "@clerk/clerk-react";
 import MainLayout from "./components/layout/MainLayout";
 import Dashboard from "./pages/Dashboard";
-import Flashcards from "./pages/Flashcards";
 import Quizzes from "./pages/Quizzes";
 import Timer from "./pages/Timer";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import HomePage from "./pages/HomePage";
 
 const queryClient = new QueryClient();
 
@@ -42,25 +43,23 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<HomePage />} />
+          
+          {/* Auth Routes */}
           {isClerkAvailable() && (
             <>
               <Route path="/sign-in" element={<SignIn />} />
               <Route path="/sign-up" element={<SignUp />} />
             </>
           )}
+          
+          {/* Protected Routes */}
           <Route 
-            path="/" 
+            path="/dashboard" 
             element={
               <ProtectedRoute>
                 <MainLayout><Dashboard /></MainLayout>
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/flashcards" 
-            element={
-              <ProtectedRoute>
-                <MainLayout><Flashcards /></MainLayout>
               </ProtectedRoute>
             } 
           />

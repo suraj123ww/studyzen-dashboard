@@ -1,10 +1,8 @@
-
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from "@/lib/utils";
 import { 
   LayoutDashboard, 
-  BookText, 
   SquarePen, 
   Clock, 
   Settings,
@@ -22,13 +20,8 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     title: "Dashboard",
-    href: "/",
+    href: "/dashboard",
     icon: <LayoutDashboard className="h-5 w-5" />,
-  },
-  {
-    title: "Flashcards",
-    href: "/flashcards",
-    icon: <BookText className="h-5 w-5" />,
   },
   {
     title: "Quizzes",
@@ -67,7 +60,7 @@ const Sidebar = () => {
   const handleSignOut = () => {
     if (clerk) {
       clerk.signOut(() => {
-        navigate("/sign-in");
+        navigate("/");
       });
     }
   };
