@@ -18,7 +18,7 @@ const SignIn = () => {
           routing="path" 
           path="/sign-in" 
           signUpUrl="/sign-up"
-          afterSignInUrl="/"
+          afterSignInUrl="/dashboard"
         />
       </div>
       <button 

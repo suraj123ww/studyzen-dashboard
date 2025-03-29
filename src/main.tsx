@@ -1,3 +1,4 @@
+
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
@@ -17,8 +18,8 @@ const AppWithAuth = () => {
         clerkJSVersion="5.56.0-snapshot.v20250312225817"
         signInUrl="/sign-in"
         signUpUrl="/sign-up"
-        signInFallbackRedirectUrl="/"
-        signUpFallbackRedirectUrl="/"
+        signInFallbackRedirectUrl="/dashboard"
+        signUpFallbackRedirectUrl="/dashboard"
         afterSignOutUrl="/">
         <App />
       </ClerkProvider>
