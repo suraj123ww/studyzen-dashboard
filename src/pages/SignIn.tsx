@@ -15,10 +15,9 @@ const SignIn = () => {
       </div>
       <div className="w-full max-w-md">
         <ClerkSignIn 
-          routing="path" 
-          path="/sign-in" 
           signUpUrl="/sign-up"
           afterSignInUrl="/dashboard"
+          redirectUrl="/dashboard"
         />
       </div>
       <button 
