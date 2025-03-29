@@ -47,16 +47,29 @@ const navItems: NavItem[] = [
   },
 ];
 
+// Helper function to check if Clerk is available
+const isClerkAvailable = () => {
+  return !!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+};
+
 const Sidebar = () => {
   const location = useLocation();
-  const { signOut } = useClerk();
-  const { user } = useUser();
   const navigate = useNavigate();
   
+  // Only use Clerk hooks if Clerk is available
+  const clerkEnabled = isClerkAvailable();
+  const clerk = clerkEnabled ? useClerk() : null;
+  const userHook = clerkEnabled ? useUser() : null;
+  
+  // Get user data if available
+  const user = userHook?.user;
+  
   const handleSignOut = () => {
-    signOut(() => {
-      navigate("/sign-in");
-    });
+    if (clerk) {
+      clerk.signOut(() => {
+        navigate("/sign-in");
+      });
+    }
   };
   
   return (
@@ -93,29 +106,43 @@ const Sidebar = () => {
       </nav>
       
       <div className="p-4 mt-auto flex flex-col gap-4">
-        <div className="flex items-center gap-3 px-2">
-          <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
-            {user?.firstName ? (
-              <span className="text-xs">{user.firstName[0]}{user.lastName?.[0] || ''}</span>
-            ) : (
-              <span className="text-xs">US</span>
-            )}
+        {clerkEnabled && user ? (
+          <>
+            <div className="flex items-center gap-3 px-2">
+              <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
+                {user.firstName ? (
+                  <span className="text-xs">{user.firstName[0]}{user.lastName?.[0] || ''}</span>
+                ) : (
+                  <span className="text-xs">US</span>
+                )}
+              </div>
+              <div className="hidden md:block">
+                <p className="text-sm font-medium">{user.firstName || 'User'}</p>
+                <p className="text-xs opacity-70">{user.emailAddresses[0].emailAddress || 'student@college.edu'}</p>
+              </div>
+            </div>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleSignOut}
+              className="justify-start text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground md:w-full"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              <span className="hidden md:inline-block">Sign Out</span>
+            </Button>
+          </>
+        ) : (
+          <div className="flex items-center gap-3 px-2">
+            <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
+              <span className="text-xs">GU</span>
+            </div>
+            <div className="hidden md:block">
+              <p className="text-sm font-medium">Guest User</p>
+              <p className="text-xs opacity-70">No authentication</p>
+            </div>
           </div>
-          <div className="hidden md:block">
-            <p className="text-sm font-medium">{user?.firstName || 'User'}</p>
-            <p className="text-xs opacity-70">{user?.emailAddresses[0].emailAddress || 'student@college.edu'}</p>
-          </div>
-        </div>
-        
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={handleSignOut}
-          className="justify-start text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground md:w-full"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          <span className="hidden md:inline-block">Sign Out</span>
-        </Button>
+        )}
       </div>
     </aside>
   );

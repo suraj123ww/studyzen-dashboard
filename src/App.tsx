@@ -1,10 +1,9 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, RedirectToSignIn, useAuth } from "@clerk/clerk-react";
 import MainLayout from "./components/layout/MainLayout";
 import Dashboard from "./pages/Dashboard";
 import Flashcards from "./pages/Flashcards";
@@ -17,7 +16,15 @@ import SignUp from "./pages/SignUp";
 
 const queryClient = new QueryClient();
 
+const isClerkAvailable = () => {
+  return !!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+};
+
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  if (!isClerkAvailable()) {
+    return <>{children}</>;
+  }
+
   return (
     <>
       <SignedIn>{children}</SignedIn>
@@ -35,8 +42,12 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/sign-up" element={<SignUp />} />
+          {isClerkAvailable() && (
+            <>
+              <Route path="/sign-in" element={<SignIn />} />
+              <Route path="/sign-up" element={<SignUp />} />
+            </>
+          )}
           <Route 
             path="/" 
             element={
